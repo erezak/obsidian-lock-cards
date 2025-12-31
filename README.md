@@ -1,6 +1,7 @@
 # Lock Cards
 
 Lock selected Canvas cards to prevent moving and resizing.
+![demo](./assets/lock.gif)
 
 ## Usage
 

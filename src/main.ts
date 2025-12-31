@@ -36,17 +36,19 @@ export default class LockCardsPlugin extends Plugin {
     this.addCommand({
       id: "toggle-lock-selected-cards",
       name: "Toggle lock for selected canvas cards",
-      callback: () => {
+      checkCallback: (checking: boolean) => {
         const mgr = this.lockManager;
-        if (!mgr) return;
+        if (!mgr) return false;
 
         const ctx = mgr.getActiveCanvasContext();
-        if (!ctx) return void new Notice("Open a canvas first.");
-
-        mgr.ensureGuardAttached(ctx);
+        if (!ctx) return false;
 
         const selectedIds = mgr.getSelectedNodeIds(ctx);
-        if (selectedIds.length === 0) return void new Notice("Select one or more canvas cards first.");
+        if (selectedIds.length === 0) return false;
+
+        if (checking) return true;
+
+        mgr.ensureGuardAttached(ctx);
 
         const anyUnlocked = selectedIds.some((id) => !mgr.isLocked(ctx.canvasPath, id));
         const newLockedState = anyUnlocked;
@@ -61,14 +63,87 @@ export default class LockCardsPlugin extends Plugin {
         mgr.applyLockedClasses(ctx);
         void this.savePluginData();
 
-      this.logger.debug("Toggled lock", {
-        canvasPath: ctx.canvasPath,
-        locked: newLockedState,
-        count: selectedIds.length,
-        selectedIds,
-      });
+        this.logger.debug("Toggled lock", {
+          canvasPath: ctx.canvasPath,
+          locked: newLockedState,
+          count: selectedIds.length,
+          selectedIds,
+        });
 
         new Notice(newLockedState ? `Locked ${selectedIds.length} card(s).` : `Unlocked ${selectedIds.length} card(s).`);
+        return true;
+      },
+    });
+
+    this.addCommand({
+      id: "lock-selected-cards",
+      name: "Lock selected canvas cards",
+      checkCallback: (checking: boolean) => {
+        const mgr = this.lockManager;
+        if (!mgr) return false;
+
+        const ctx = mgr.getActiveCanvasContext();
+        if (!ctx) return false;
+
+        const selectedIds = mgr.getSelectedNodeIds(ctx);
+        if (selectedIds.length === 0) return false;
+
+        if (checking) return true;
+
+        mgr.ensureGuardAttached(ctx);
+
+        for (const id of selectedIds) {
+          mgr.setLocked(ctx.canvasPath, id, true);
+          mgr.snapshotOnLock(ctx, id);
+        }
+
+        mgr.applyLockedClasses(ctx);
+        void this.savePluginData();
+
+        this.logger.debug("Locked cards", {
+          canvasPath: ctx.canvasPath,
+          count: selectedIds.length,
+          selectedIds,
+        });
+
+        new Notice(`Locked ${selectedIds.length} card(s).`);
+        return true;
+      },
+    });
+
+    this.addCommand({
+      id: "unlock-selected-cards",
+      name: "Unlock selected canvas cards",
+      checkCallback: (checking: boolean) => {
+        const mgr = this.lockManager;
+        if (!mgr) return false;
+
+        const ctx = mgr.getActiveCanvasContext();
+        if (!ctx) return false;
+
+        const selectedIds = mgr.getSelectedNodeIds(ctx);
+        if (selectedIds.length === 0) return false;
+
+        if (checking) return true;
+
+        mgr.ensureGuardAttached(ctx);
+
+        for (const id of selectedIds) {
+          mgr.setLocked(ctx.canvasPath, id, false);
+          mgr.forgetOnUnlock(ctx.canvasPath, id);
+        }
+
+        mgr.applyLockedClasses(ctx);
+        void this.savePluginData();
+
+        this.logger.debug("Unlocked cards", {
+          canvasPath: ctx.canvasPath,
+          count: selectedIds.length,
+          selectedIds,
+        });
+
+        new Notice(`Unlocked ${selectedIds.length} card(s).`);
+        return true;
       },
     });
 

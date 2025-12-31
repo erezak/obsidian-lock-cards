@@ -1,0 +1,4 @@
+
+> obsidian-sample-plugin@1.0.0 lint
+> eslint .
+

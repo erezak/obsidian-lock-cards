@@ -1,0 +1,10 @@
+{
+  "id": "lock-cards",
+  "name": "Lock Cards",
+  "version": "0.0.1",
+  "minAppVersion": "1.5.0",
+  "description": "Lock selected Canvas cards to prevent moving and resizing.",
+  "author": "Your Name",
+  "authorUrl": "",
+  "isDesktopOnly": true
+}

@@ -1,0 +1,15 @@
+/* Visual marker */
+.lc-locked {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.lc-locked::after {
+  content: "🔒";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 14px;
+  opacity: 0.85;
+  pointer-events: none;
+}

@@ -2,26 +2,16 @@ import { Notice, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, LockCardsSettingTab, type LockCardsSettings } from "./settings";
 import { loadPluginState, savePluginState, type LockedByCanvas } from "./data/pluginData";
 import { CanvasLockManager } from "./canvas/CanvasLockManager";
-import { createDebugLogger, type DebugLogger } from "./utils/logger";
 
 export default class LockCardsPlugin extends Plugin {
   private lockedByCanvas: LockedByCanvas = {};
   settings: LockCardsSettings = { ...DEFAULT_SETTINGS };
   private lockManager: CanvasLockManager | null = null;
-  private logger: DebugLogger = createDebugLogger({
-    getEnabled: () => false,
-    prefix: "lock-cards",
-  });
 
   async onload() {
     const state = await loadPluginState(this);
     this.lockedByCanvas = state.lockedByCanvas;
     this.settings = state.settings;
-
-		this.logger = createDebugLogger({
-      getEnabled: () => this.settings.enableDebugLogging === true,
-			prefix: "lock-cards",
-		});
 
     this.lockManager = new CanvasLockManager(
       this.app.workspace,
@@ -63,13 +53,6 @@ export default class LockCardsPlugin extends Plugin {
         mgr.applyLockedClasses(ctx);
         void this.savePluginData();
 
-        this.logger.debug("Toggled lock", {
-          canvasPath: ctx.canvasPath,
-          locked: newLockedState,
-          count: selectedIds.length,
-          selectedIds,
-        });
-
         new Notice(newLockedState ? `Locked ${selectedIds.length} card(s).` : `Unlocked ${selectedIds.length} card(s).`);
         return true;
       },
@@ -100,12 +83,6 @@ export default class LockCardsPlugin extends Plugin {
         mgr.applyLockedClasses(ctx);
         void this.savePluginData();
 
-        this.logger.debug("Locked cards", {
-          canvasPath: ctx.canvasPath,
-          count: selectedIds.length,
-          selectedIds,
-        });
-
         new Notice(`Locked ${selectedIds.length} card(s).`);
         return true;
       },
@@ -135,12 +112,6 @@ export default class LockCardsPlugin extends Plugin {
 
         mgr.applyLockedClasses(ctx);
         void this.savePluginData();
-
-        this.logger.debug("Unlocked cards", {
-          canvasPath: ctx.canvasPath,
-          count: selectedIds.length,
-          selectedIds,
-        });
 
         new Notice(`Unlocked ${selectedIds.length} card(s).`);
         return true;
@@ -177,9 +148,6 @@ export default class LockCardsPlugin extends Plugin {
         mgr.applyLockedClasses(ctx);
         mgr.primeLockedSnapshots(ctx);
 
-			this.logger.debug("Active leaf changed; applied lock state", {
-				canvasPath: ctx.canvasPath,
-			});
       }),
     );
 
@@ -200,10 +168,6 @@ export default class LockCardsPlugin extends Plugin {
 
   async saveSettings() {
     this.lockManager?.setSettings(this.settings);
-		this.logger?.debug("Settings updated", {
-			disableLockWhileAltDown: this.settings.disableLockWhileAltDown,
-			enableDebugLogging: this.settings.enableDebugLogging,
-		});
     await this.savePluginData();
   }
 

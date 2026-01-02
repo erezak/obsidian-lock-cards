@@ -27,11 +27,10 @@ export async function loadPluginState(plugin: Plugin): Promise<LoadedPluginState
 
 		const rawSettings = isRecord(maybe.settings) ? maybe.settings : null;
 		const disableLockWhileAltDown = rawSettings?.["disableLockWhileAltDown"] === false ? false : true;
-		const enableDebugLogging = rawSettings?.["enableDebugLogging"] === true;
 
 		return {
 			lockedByCanvas,
-			settings: { ...DEFAULT_SETTINGS, disableLockWhileAltDown, enableDebugLogging },
+			settings: { ...DEFAULT_SETTINGS, disableLockWhileAltDown },
 		};
 	}
 

@@ -17,7 +17,6 @@ Locked cards are visually marked and attempts to move/resize them are reverted.
 ## Settings
 
 - **Disable lock while alt is held**: temporarily allow moving locked cards by holding alt.
-- **Enable debug logging**: write debug logs to the Developer Tools console.
 
 ## Install (manual)
 
@@ -41,4 +40,3 @@ Then reload Obsidian and enable the plugin in **Settings → Community plugins**
 ## Troubleshooting
 
 - If commands don’t appear, make sure the plugin is enabled and Obsidian has been reloaded.
-- If you need logs, enable **Enable debug logging** and open **View → Toggle developer tools**.

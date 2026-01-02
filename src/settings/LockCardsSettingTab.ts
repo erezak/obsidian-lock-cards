@@ -29,17 +29,5 @@ export class LockCardsSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					}),
 			);
-
-			new Setting(containerEl)
-				.setName("Enable debug logging")
-				.setDesc("Write debug logs to the Developer Tools console.")
-				.addToggle((toggle) =>
-					toggle
-						.setValue(this.plugin.settings.enableDebugLogging)
-						.onChange(async (value) => {
-							this.plugin.settings.enableDebugLogging = value;
-							await this.plugin.saveSettings();
-						}),
-				);
 	}
 }

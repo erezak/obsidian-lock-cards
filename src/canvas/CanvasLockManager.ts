@@ -27,7 +27,7 @@ export class CanvasLockManager {
 
 	private lastRestoreAtByCanvas: Record<string, Record<string, number>> = {};
 
-	private altDown = false;
+	private shiftDown = false;
 	private restoring = new WeakSet<HTMLElement>();
 	private nodeIdByEl = new WeakMap<HTMLElement, string>();
 	private moveElByNodeEl = new WeakMap<HTMLElement, HTMLElement>();
@@ -50,7 +50,7 @@ export class CanvasLockManager {
 		) => void,
 		private registerCleanup: (cleanup: () => void) => void,
 	) {
-		this.installAltKeyTracking();
+		this.installShiftKeyTracking();
 	}
 
 	dispose() {
@@ -437,12 +437,12 @@ export class CanvasLockManager {
 		}
 	}
 
-	private installAltKeyTracking() {
+	private installShiftKeyTracking() {
 		const onKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Alt") this.altDown = true;
+			if (e.key === "Shift") this.shiftDown = true;
 		};
 		const onKeyUp = (e: KeyboardEvent) => {
-			if (e.key === "Alt") this.altDown = false;
+			if (e.key === "Shift") this.shiftDown = false;
 		};
 
 		this.registerDomEvent(document, "keydown", onKeyDown, true);
@@ -506,7 +506,7 @@ export class CanvasLockManager {
 		};
 
 		this.observer = new MutationObserver((mutations) => {
-			if (this.settings.disableLockWhileAltDown && this.altDown) return;
+			if (this.settings.disableLockWhileShiftDown && this.shiftDown) return;
 			if (!this.observedView) return;
 
 			for (const m of mutations) {
@@ -577,7 +577,7 @@ export class CanvasLockManager {
 		const container = view.containerEl;
 
 		const shouldBypass = (): boolean =>
-			this.settings.disableLockWhileAltDown && this.altDown;
+			this.settings.disableLockWhileShiftDown && this.shiftDown;
 
 		const onPointerDown = (e: PointerEvent) => {
 			this.pointerIsDown = true;
@@ -643,7 +643,7 @@ export class CanvasLockManager {
 		const tick = () => {
 			if (!this.enforcing) return;
 			const now = Date.now();
-			const shouldBypass = this.settings.disableLockWhileAltDown && this.altDown;
+			const shouldBypass = this.settings.disableLockWhileShiftDown && this.shiftDown;
 
 			if (!shouldBypass) {
 				this.enforceLockedNodesOnce();

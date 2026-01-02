@@ -16,7 +16,7 @@ Locked cards are visually marked and attempts to move/resize them are reverted.
 
 ## Settings
 
-- **Disable lock while alt is held**: temporarily allow moving locked cards by holding alt.
+- **Disable lock while shift is held**: temporarily allow moving locked cards by holding shift.
 
 ## Install (manual)
 

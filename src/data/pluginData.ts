@@ -26,11 +26,15 @@ export async function loadPluginState(plugin: Plugin): Promise<LoadedPluginState
 		const lockedByCanvas = maybe.lockedByCanvas ?? {};
 
 		const rawSettings = isRecord(maybe.settings) ? maybe.settings : null;
-		const disableLockWhileAltDown = rawSettings?.["disableLockWhileAltDown"] === false ? false : true;
+		// Support both old (disableLockWhileAltDown) and new (disableLockWhileShiftDown) setting names
+		const disableLockWhileShiftDown = 
+			rawSettings?.["disableLockWhileShiftDown"] === false ? false :
+			rawSettings?.["disableLockWhileAltDown"] === false ? false : 
+			true;
 
 		return {
 			lockedByCanvas,
-			settings: { ...DEFAULT_SETTINGS, disableLockWhileAltDown },
+			settings: { ...DEFAULT_SETTINGS, disableLockWhileShiftDown },
 		};
 	}
 

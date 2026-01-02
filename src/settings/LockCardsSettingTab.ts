@@ -19,13 +19,13 @@ export class LockCardsSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Disable lock while alt is held")
-			.setDesc("Temporarily allow moving locked cards by holding alt.")
+			.setName("Disable lock while shift is held")
+			.setDesc("Temporarily allow moving locked cards by holding shift.")
 			.addToggle((toggle) =>
 				toggle
-					.setValue(this.plugin.settings.disableLockWhileAltDown)
+					.setValue(this.plugin.settings.disableLockWhileShiftDown)
 					.onChange(async (value) => {
-						this.plugin.settings.disableLockWhileAltDown = value;
+						this.plugin.settings.disableLockWhileShiftDown = value;
 						await this.plugin.saveSettings();
 					}),
 			);

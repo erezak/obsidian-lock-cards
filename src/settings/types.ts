@@ -1,7 +1,7 @@
 export interface LockCardsSettings {
-	disableLockWhileAltDown: boolean;
+	disableLockWhileShiftDown: boolean;
 }
 
 export const DEFAULT_SETTINGS: LockCardsSettings = {
-	disableLockWhileAltDown: true,
+	disableLockWhileShiftDown: true,
 };
